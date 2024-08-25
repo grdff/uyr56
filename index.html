@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Game</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase App (منصة Firebase الأساسية) -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <!-- Firebase Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="controls">
+        <button id="up">↑</button>
+        <button id="down">↓</button>
+        <button id="left">←</button>
+        <button id="right">→</button>
+        <button id="shoot1">Shoot P1</button>
+        <button id="shoot2">Shoot P2</button>
+    </div>
+
+    <script>
+        // إعداد Firebase
+        import { initializeApp } from "firebase/app";
+        import { getDatabase, ref, set, onValue } from "firebase/database";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAgv4ga8tVfSjo-t_i4s6QrWMKwtLE5B1w",
+          authDomain: "wqty-dfc7b.firebaseapp.com",
+          projectId: "wqty-dfc7b",
+          storageBucket: "wqty-dfc7b.appspot.com",
+          messagingSenderId: "445541680133",
+          appId: "1:445541680133:web:0a6a3368f222542e1a886c",
+          measurementId: "G-9Y6TSRVLC9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // دالة لحفظ حالة اللاعب في قاعدة البيانات
+        function savePlayerState(playerId, x, y) {
+          set(ref(database, 'players/' + playerId), {
+            x: x,
+            y: y
+          });
+        }
+
+        // دالة للاستماع إلى تحديثات اللاعبين من قاعدة البيانات
+        function listenForPlayerUpdates(callback) {
+          const playersRef = ref(database, 'players/');
+          onValue(playersRef, (snapshot) => {
+            const data = snapshot.val();
+            callback(data);
+          });
+        }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
